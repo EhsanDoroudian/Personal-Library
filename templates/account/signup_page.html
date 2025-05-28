@@ -1,0 +1,18 @@
+{% extends "_base.html" %}
+
+{% block title %}Sign Up Page{% endblock title %}
+
+{% block content %}
+
+<h1>Sign UP</h1>
+
+
+<form method="post" action="{% url 'signup' %}">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type='submit' method='post'>Submit</button>
+
+{# Assumes you set up the password_reset view in your URLconf #}
+<p><a href="{% url 'login' %}">login</a></p>
+
+{% endblock %}
