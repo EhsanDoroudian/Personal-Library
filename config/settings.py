@@ -150,8 +150,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # custom user
 AUTH_USER_MODEL = "accounts.CustomUserModel"  
 
-LOGIN_REDIRECT_URL = "home"
-LOGOUT_REDIRECT_URL = "home"
+LOGIN_REDIRECT_URL = "books:book_list"
+LOGOUT_REDIRECT_URL = "books:book_list"
 
 # email backend settings
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
@@ -162,5 +162,5 @@ ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = False
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = False
-ACCOUNT_LOGOUT_REDIRECT_URL = "home"
+ACCOUNT_LOGOUT_REDIRECT_URL = "books:book_list"
 ACCOUNT_SIGNUP_REDIRECT_URL = "account_login"

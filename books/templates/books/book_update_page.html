@@ -1,0 +1,17 @@
+{% extends "_base.html" %}
+
+{% block title %}Book Update{% endblock title %}
+
+{% block content %}
+
+    <h1>Book {{book.id}} Update</h1>
+    <form method='post' action='{% url "books:book_update" book.id %}'>
+        {% csrf_token %}
+        {{form.as_p}}
+        <input value='edit' type='submit'>
+    </form>
+    <a href={% url "books:book_list" %}>main Page</a>
+
+
+{% endblock content %}
+

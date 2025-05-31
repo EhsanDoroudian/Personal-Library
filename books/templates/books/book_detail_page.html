@@ -1,0 +1,21 @@
+{% extends "_base.html" %}
+
+{% block title %}Book Detail{% endblock title %}
+
+{% block content %}
+
+    <h1>Book {{book.id}}</h1>
+    <p>{{book.title}}</p>
+    <p>{{book.body}}</p>
+    <p>{{book.price}}</p>
+    <p>{{book.body}}</p>
+    <p>{{book.user_id}}</p>
+    <p>---------------------</p>
+
+    <p>
+        <a href={% url "books:book_update" book.id %}>edit</a>
+        <a href={% url "books:book_delete" book.id %}>delete</a>
+    </p>
+
+{% endblock content %}
+

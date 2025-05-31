@@ -1,0 +1,17 @@
+{% extends "_base.html" %}
+
+{% block title %}Home Page{% endblock title %}
+
+{% block content %}
+    <h1>Books List</h1>
+    {% for book in books%}
+    <p><a href={% url "books:book_detail" book.id %}>{{book.title}}</a></p>
+    <p>{{book.body}}</p>
+    <p>{{book.price}}</p>
+    <p>{{book.user_id}}</p>
+    <p>---------------------</p>
+    {% endfor %}
+
+    <a href={% url "books:book_create" %}>create new post</a>
+{% endblock content %}
+

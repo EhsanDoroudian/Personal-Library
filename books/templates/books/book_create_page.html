@@ -1,0 +1,17 @@
+{% extends "_base.html" %}
+
+{% block title %}Book Create{% endblock title %}
+
+{% block content %}
+
+    <h1>Book Create</h1>
+    <form method='post' action='{% url "books:book_create" %}'>
+        {% csrf_token %}
+        {{form.as_p}}
+        <input value='create' type='submit'>
+    </form>
+    <a href={% url "books:book_list" %}>main Page</a>
+
+
+{% endblock content %}
+
