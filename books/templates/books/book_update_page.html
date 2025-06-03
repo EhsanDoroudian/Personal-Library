@@ -1,17 +1,174 @@
 {% extends "_base.html" %}
+{% load static %}
 
-{% block title %}Book Update{% endblock title %}
+{% block title %}ویرایش کتاب {{book.title}} | کتاب یار{% endblock title %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/book_update.css' %}">
+{% endblock style %}
 
 {% block content %}
 
-    <h1>Book {{book.id}} Update</h1>
-    <form method='post' action='{% url "books:book_update" book.id %}'>
-        {% csrf_token %}
-        {{form.as_p}}
-        <input value='edit' type='submit'>
-    </form>
-    <a href={% url "books:book_list" %}>main Page</a>
+<div class="container py-4">
+    <div class="row">
+        <!-- Main Form Column -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-journal-text me-2"></i>ویرایش کتاب: {{book.title}}</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Book Cover Preview -->
+                        <div class="mb-4 text-center">
+                            <div class="book-cover-preview mb-3">
+                                <img src="https://newcdn.fidibo.com/images/books/65579_50411_normal.jpg" 
+                                     alt="جلد فعلی کتاب" class="img-fluid rounded shadow" style="max-height: 250px;">
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <label for="cover" class="btn btn-outline-primary">
+                                    <i class="bi bi-image me-1"></i> تغییر تصویر جلد
+                                    <input type="file" id="cover" name="cover" accept="image/*" class="d-none">
+                                </label>
+                            </div>
+                        </div>
 
+                        <!-- Book Title -->
+                        <div class="mb-3">
+                            <label for="title" class="form-label fw-bold">عنوان کتاب <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="title" name="title" value="{{book.title}}" required>
+                        </div>
+
+                        <!-- Author -->
+                        <div class="mb-3">
+                            <label for="author" class="form-label fw-bold">نویسنده <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="author" name="author" value="{{book.author}}" required>
+                        </div>
+
+                        <!-- Translator -->
+                        <div class="mb-3">
+                            <label for="translator" class="form-label fw-bold">مترجم</label>
+                            <input type="text" class="form-control" id="translator" name="translator" value="{{book.translator}}">
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label fw-bold">توضیحات کتاب</label>
+                            <textarea class="form-control" id="description" name="description" rows="5">{{book.body}}</textarea>
+                        </div>
+
+                        <!-- Additional Fields -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="publisher" class="form-label fw-bold">ناشر</label>
+                                <input type="text" class="form-control" id="publisher" name="publisher" value="{{book.publisher}}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="year" class="form-label fw-bold">سال انتشار</label>
+                                <input type="number" class="form-control" id="year" name="year" min="1300" max="1402" value="{{book.publish_year}}">
+                            </div>
+                        </div>
+
+                        <!-- Categories -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">دسته‌بندی‌ها</label>
+                            <div class="d-flex flex-wrap gap-3">
+                                {% for category in categories %}
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="category{{forloop.counter}}" 
+                                           name="categories" value="{{category.id}}" {% if category in book.categories.all %}checked{% endif %}>
+                                    <label class="form-check-label" for="category{{forloop.counter}}">{{category.name}}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            {% comment %} <a href="{% url 'book_detail' book.id %}" class="btn btn-outline-secondary me-md-2"> {% endcomment %}
+                                <i class="bi bi-x-circle"></i> انصراف
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> ذخیره تغییرات
+                            </button>
+                            <button type="button" class="btn btn-danger ms-md-2" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <i class="bi bi-trash"></i> حذف کتاب
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Sidebar -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>راهنمای ویرایش کتاب</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h6><i class="bi bi-lightbulb"></i> نکات مهم:</h6>
+                        <ul class="mb-0">
+                            <li>فیلدهای دارای علامت <span class="text-danger">*</span> اجباری هستند</li>
+                            <li>تغییرات پس از ذخیره، بلافاصله اعمال می‌شوند</li>
+                            <li>برای پیش‌نمایش تغییرات می‌توانید از دکمه انصراف استفاده کنید</li>
+                        </ul>
+                    </div>
+                    <div class="alert alert-light">
+                        <h6><i class="bi bi-clock-history"></i> تاریخچه ویرایش:</h6>
+                        <ul class="mb-0">
+                            <li>آخرین ویرایش: ۱۴۰۲/۰۵/۲۰</li>
+                            <li>توسط: محمدهادی</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-collection me-2"></i>کتاب‌های مشابه</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for similar_book in similar_books %}
+                        {% comment %} <a href="{% url 'book_update' similar_book.id %}" class="list-group-item list-group-item-action"> {% endcomment %}
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{similar_book.title}}</h6>
+                                <small>{{similar_book.publish_year}}</small>
+                            </div>
+                            <p class="mb-1 small text-muted">{{similar_book.author}}</p>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel"><i class="bi bi-exclamation-triangle"></i> حذف کتاب</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>آیا مطمئن هستید که می‌خواهید کتاب "{{book.title}}" را حذف کنید؟ این عمل غیرقابل بازگشت است.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">انصراف</button>
+                {% comment %} <form method="POST" action="{% url 'book_delete' book.id %}" class="d-inline"> {% endcomment %}
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">حذف کتاب</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock content %}
-

@@ -1,21 +1,107 @@
 {% extends "_base.html" %}
+{% load static %}
 
-{% block title %}Book Detail{% endblock title %}
+{% block title %}کتاب یار|{{book.title}}{% endblock title %}
+
+
+{% block style %}<link rel="stylesheet" href="{% static "css/book_detail.css" %}">{% endblock style %}
+
 
 {% block content %}
 
-    <h1>Book {{book.id}}</h1>
-    <p>{{book.title}}</p>
-    <p>{{book.body}}</p>
-    <p>{{book.price}}</p>
-    <p>{{book.body}}</p>
-    <p>{{book.user_id}}</p>
-    <p>---------------------</p>
+<main class="container my-5">
+    <div class="row">
+        <!-- Book Cover Column -->
+        <div class="col-md-4 mb-4">
+            <div class="book-cover-container shadow-lg">
+                <img src="https://newcdn.fidibo.com/images/books/65579_50411_normal.jpg" 
+                     alt="جلد کتاب هفت عادت مردمان موثر" class="img-fluid rounded">
+            </div>
+        </div>
 
-    <p>
-        <a href={% url "books:book_update" book.id %}>edit</a>
-        <a href={% url "books:book_delete" book.id %}>delete</a>
-    </p>
+        <!-- Book Details Column -->
+        <div class="col-md-8">
+            <div class="book-header mb-4">
+                <h1 class="book-title">{{book.title}}</h1>
+                <div class="book-meta">
+                    <span class="author"><i class="bi bi-person"></i> نویسنده: {{book.author}}</span>
+                    <span class="author"><i class="bi bi-person"></i> مترحم: {{book.translator}}</span>
+                    <span class="author"><i class="bi bi-person"></i> انتشارات: {{book.publisher}}</span>
+                    <span class="category"><i class="bi bi-tag"></i> دسته: </span>
+                    <span class="pages"><i class="bi bi-file-text"></i> ۳۸۴ صفحه</span>
+                </div>
+                <div class="rating mt-2">
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-fill text-warning"></i>
+                    <i class="bi bi-star-half text-warning"></i>
+                    <span class="ms-2">۴.۵ از ۵ (۱۲۸ نظر)</span>
+                </div>
+            </div>
+
+            <div class="book-description card mb-4">
+                <div class="card-body">
+                    <h3 class="card-title"><i class="bi bi-book"></i> درباره کتاب</h3>
+                    <p class="card-text">
+                        {{book.body}}
+                    </p>
+                </div>
+            </div>
+
+            <div class="book-details card mb-4">
+                <div class="card-body">
+                    <h3 class="card-title"><i class="bi bi-info-circle"></i> جزئیات کتاب</h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>ناشر:</strong> انتشارات معارف</p>
+                            <p><strong>سال انتشار:</strong> ۱۴۰۰</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>شابک:</strong> ۹۷۸-۹۶۴-۳۶۵-۳۴۵-۲</p>
+                            <p><strong>زبان:</strong> فارسی</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reviews card">
+                <div class="card-body">
+                    <h3 class="card-title"><i class="bi bi-chat-left-text"></i> نظرات خوانندگان</h3>
+                    
+                    <div class="review mb-4">
+                        <div class="review-header d-flex justify-content-between">
+                            <strong>نوشته توکل</strong>
+                            <small class="text-muted">۱۴۰۲/۰۵/۱۵</small>
+                        </div>
+                        <div class="review-body mt-2">
+                            <p>
+                                با سخ چند نگفته صحراستم یکی اول اینکه من چه دسته از آزمایش بود که می‌کنیم کدام، خودرو ناشر به نامه که آخر کتابو بگیرد مستمر و جنوبه اما واقعاً ممکن می‌رسد او نیست کافی خودش دارد. حرف مثل شبکه امیدوار بود؟ در مواقع ترجمه معمول با... کافی‌های خودش که مبارزه بود که طلب بود؟
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="review mb-4">
+                        <div class="review-header d-flex justify-content-between">
+                            <strong>نوشته توکل</strong>
+                            <small class="text-muted">۱۴۰۲/۰۵/۱۰</small>
+                        </div>
+                        <div class="review-body mt-2">
+                            <p>
+                                با سخ چند نگفته صحراستم یکی اول اینکه من چه دسته از آزمایش بود که می‌کنیم کدام، خودرو ناشر به نامه که آخر کتابو بگیرد مستمر و جنوبه اما واقعاً ممکن می‌رسد او نیست کافی خودش دارد. حرف مثل شبکه امیدوار بود؟ در مواقع ترجمه معمول با... کافی‌های خودش که مبارزه بود که طلب بود؟
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="add-review mt-4">
+                        <h5>نظر خود را بنویسید</h5>
+                        <textarea class="form-control mb-2" rows="3" placeholder="نظر شما درباره این کتاب..."></textarea>
+                        <button class="btn btn-primary">ارسال نظر</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
 
 {% endblock content %}
-

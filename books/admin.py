@@ -4,5 +4,5 @@ from .models import Book
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ['user', 'title', 'author', 'price', 'create_datetime']
-    ordering = ['modified_datetime']
+    list_display = ['id', 'title', 'author', 'price', 'created_datetime']
+    list_display_links = ['id', 'title']

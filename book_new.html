@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="افزودن کتاب جدید به کتابخانه کتاب یار">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/book_create.css' %}">
+
+    <title>افزودن کتاب جدید | کتاب یار</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="bi bi-book-half fs-4 me-2"></i>
+                <span class="fw-bold">کتاب یار</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="bi bi-house-door me-1"></i>خانه</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#"><i class="bi bi-plus-circle me-1"></i>افزودن کتاب</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="bi bi-search me-1"></i>جستجو</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center text-white">
+                    <i class="bi bi-person-circle me-2"></i>
+                    <span>محمدهادی</span>
+                    <a href="#" class="text-white me-2 text-decoration-none"><i class="bi bi-box-arrow-left me-1"></i>خروج</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <div class="row">
+            <!-- Main Form Column -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-journal-plus me-2"></i>فرم افزودن کتاب جدید</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" enctype="multipart/form-data">
+                            <!-- Book Title -->
+                            <div class="mb-3">
+                                <label for="title" class="form-label fw-bold">عنوان کتاب <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="title" name="title" required>
+                                <div class="form-text">عنوان کامل کتاب را وارد کنید</div>
+                            </div>
+
+                            <!-- Author -->
+                            <div class="mb-3">
+                                <label for="author" class="form-label fw-bold">نویسنده <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="author" name="author" required>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="mb-3">
+                                <label for="description" class="form-label fw-bold">توضیحات کتاب</label>
+                                <textarea class="form-control" id="description" name="description" rows="5"></textarea>
+                            </div>
+
+                            <!-- Book Cover -->
+                            <div class="mb-3">
+                                <label for="cover" class="form-label fw-bold">تصویر جلد کتاب</label>
+                                <input class="form-control" type="file" id="cover" name="cover" accept="image/*">
+                            </div>
+
+                            <!-- Additional Fields -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="publisher" class="form-label fw-bold">ناشر</label>
+                                    <input type="text" class="form-control" id="publisher" name="publisher">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="year" class="form-label fw-bold">سال انتشار</label>
+                                    <input type="number" class="form-control" id="year" name="year" min="1300" max="1402">
+                                </div>
+                            </div>
+
+                            <!-- Categories -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">دسته‌بندی‌ها</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="category1" name="categories" value="ادبیات">
+                                    <label class="form-check-label" for="category1">ادبیات</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="category2" name="categories" value="تاریخ">
+                                    <label class="form-check-label" for="category2">تاریخ</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="category3" name="categories" value="علمی">
+                                    <label class="form-check-label" for="category3">علمی</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="category4" name="categories" value="خودیاری">
+                                    <label class="form-check-label" for="category4">خودیاری</label>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                                <button type="reset" class="btn btn-outline-secondary me-md-2">
+                                    <i class="bi bi-x-circle"></i> انصراف
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-save"></i> ذخیره کتاب
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Help Sidebar -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>راهنمای افزودن کتاب</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <h6><i class="bi bi-lightbulb"></i> نکات مهم:</h6>
+                            <ul class="mb-0">
+                                <li>فیلدهای دارای علامت <span class="text-danger">*</span> اجباری هستند</li>
+                                <li>عنوان کتاب باید دقیق و کامل باشد</li>
+                                <li>نام نویسنده را به صورت کامل وارد کنید</li>
+                            </ul>
+                        </div>
+                        <div class="alert alert-light">
+                            <h6><i class="bi bi-images"></i> تصویر جلد:</h6>
+                            <p class="mb-0">تصویر باید با کیفیت و واضح باشد. حجم تصویر نباید از 2MB بیشتر باشد.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="bi bi-check-circle me-2"></i>آخرین کتاب‌های اضافه شده</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">اثر مرکب</h6>
+                                    <small>3 روز پیش</small>
+                                </div>
+                                <p class="mb-1 small text-muted">دارن هاردی</p>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">جاناتان مرغ دریایی</h6>
+                                    <small>1 هفته پیش</small>
+                                </div>
+                                <p class="mb-1 small text-muted">ریچارد باخ</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-light py-3 mt-5 border-top">
+        <div class="container text-center">
+            <p class="mb-0 small text-muted">تمامی حقوق برای <a href="https://codingyar.com/" class="text-decoration-none">کدینگ یار</a> محفوظ است © 1402</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
