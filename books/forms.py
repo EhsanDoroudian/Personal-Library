@@ -7,11 +7,15 @@ class BookForm(ModelForm):
     class Meta:
         model = Book
         fields = [
-            "user",
             "title",
-            "author",
-            "translator",
-            "publisher",
-            "price",
             "body",
+            "author",
+            "category",
+            "page_num",
+            "shabak_num",
+            "publisher",
+            "translator",
+            "year",
+            "cover",
+            "price",
         ]

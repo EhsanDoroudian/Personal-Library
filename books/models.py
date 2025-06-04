@@ -8,10 +8,10 @@ class Book(models.Model):
     UserModel = get_user_model()
 
     user = models.ForeignKey(UserModel, on_delete=models.PROTECT, related_name='book')
-    title = models.CharField(verbose_name='title', max_length=30)
+    title = models.CharField(verbose_name='title', max_length=50)
     body = models.TextField(verbose_name='description')
     author = models.CharField(verbose_name='author', max_length=30)
-    category = models.CharField(verbose_name='category', max_length=20, null=True)
+    category = models.CharField(verbose_name='category', max_length=50, null=True)
     page_num = models.PositiveIntegerField(verbose_name='page number', null=True)
     shabak_num = models.CharField(verbose_name="shabak number", max_length=20, unique=True, null=True)
     publisher = models.CharField(verbose_name='publisher', max_length=20, null=True)

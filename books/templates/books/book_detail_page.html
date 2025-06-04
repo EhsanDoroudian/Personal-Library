@@ -14,8 +14,9 @@
         <!-- Book Cover Column -->
         <div class="col-md-4 mb-4">
             <div class="book-cover-container shadow-lg">
-                <img src="https://newcdn.fidibo.com/images/books/65579_50411_normal.jpg" 
-                     alt="جلد کتاب هفت عادت مردمان موثر" class="img-fluid rounded">
+                {% if book.cover %}{% endif %}
+                <img src="{{book.cover.url}}" 
+                     alt="{{book.title}}" class="img-fluid rounded">
             </div>
         </div>
 
@@ -27,17 +28,17 @@
                     <span class="author"><i class="bi bi-person"></i> نویسنده: {{book.author}}</span>
                     <span class="author"><i class="bi bi-person"></i> مترحم: {{book.translator}}</span>
                     <span class="author"><i class="bi bi-person"></i> انتشارات: {{book.publisher}}</span>
-                    <span class="category"><i class="bi bi-tag"></i> دسته: </span>
-                    <span class="pages"><i class="bi bi-file-text"></i> ۳۸۴ صفحه</span>
+                    <span class="category"><i class="bi bi-tag"></i> دسته: {{book.category}}</span>
+                    <span class="pages"><i class="bi bi-file-text"></i> {{book.page_num}} صفحه</span>
                 </div>
-                <div class="rating mt-2">
+                {% comment %} <div class="rating mt-2">
                     <i class="bi bi-star-fill text-warning"></i>
                     <i class="bi bi-star-fill text-warning"></i>
                     <i class="bi bi-star-fill text-warning"></i>
                     <i class="bi bi-star-fill text-warning"></i>
                     <i class="bi bi-star-half text-warning"></i>
                     <span class="ms-2">۴.۵ از ۵ (۱۲۸ نظر)</span>
-                </div>
+                </div> {% endcomment %}
             </div>
 
             <div class="book-description card mb-4">
@@ -54,11 +55,11 @@
                     <h3 class="card-title"><i class="bi bi-info-circle"></i> جزئیات کتاب</h3>
                     <div class="row">
                         <div class="col-md-6">
-                            <p><strong>ناشر:</strong> انتشارات معارف</p>
-                            <p><strong>سال انتشار:</strong> ۱۴۰۰</p>
+                            <p><strong>ناشر:</strong> انتشارات {{book.publisher}}</p>
+                            <p><strong>سال انتشار:</strong> {{book.year}}</p>
                         </div>
                         <div class="col-md-6">
-                            <p><strong>شابک:</strong> ۹۷۸-۹۶۴-۳۶۵-۳۴۵-۲</p>
+                            <p><strong>شابک:</strong> {{book.shabak_num}}</p>
                             <p><strong>زبان:</strong> فارسی</p>
                         </div>
                     </div>

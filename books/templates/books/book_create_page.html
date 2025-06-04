@@ -3,9 +3,7 @@
 
 {% block title %}افزودن کتاب جدید به کتاب یار{% endblock title %}
 
-
 {% block style %}<link rel="stylesheet" href="{% static "css/book_create.css" %}">{% endblock style %}
-
 
 {% block content %}
 <div class="container py-4">
@@ -18,61 +16,93 @@
                 </div>
                 <div class="card-body">
                     <form method="POST" enctype="multipart/form-data">
-                        <!-- Book Title -->
-                        <div class="mb-3">
-                            <label for="title" class="form-label fw-bold">عنوان کتاب <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="title" name="title" required>
-                            <div class="form-text">عنوان کامل کتاب را وارد کنید</div>
-                        </div>
-
-                        <!-- Author -->
-                        <div class="mb-3">
-                            <label for="author" class="form-label fw-bold">نویسنده <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="author" name="author" required>
-                        </div>
-
-                        <!-- Description -->
-                        <div class="mb-3">
-                            <label for="description" class="form-label fw-bold">توضیحات کتاب</label>
-                            <textarea class="form-control" id="description" name="description" rows="5"></textarea>
-                        </div>
-
-                        <!-- Book Cover -->
-                        <div class="mb-3">
-                            <label for="cover" class="form-label fw-bold">تصویر جلد کتاب</label>
-                            <input class="form-control" type="file" id="cover" name="cover" accept="image/*">
-                        </div>
-
-                        <!-- Additional Fields -->
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="publisher" class="form-label fw-bold">ناشر</label>
-                                <input type="text" class="form-control" id="publisher" name="publisher">
+                        {% csrf_token %}
+                        
+                        <!-- Basic Information Section -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary mb-3"><i class="bi bi-info-square"></i> اطلاعات پایه</h6>
+                            
+                            <!-- Book Title -->
+                            <div class="mb-3">
+                                <label for="title" class="form-label fw-bold">عنوان کتاب <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="title" name="title" required>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="year" class="form-label fw-bold">سال انتشار</label>
-                                <input type="number" class="form-control" id="year" name="year" min="1300" max="1402">
+
+                            <!-- Author -->
+                            <div class="mb-3">
+                                <label for="author" class="form-label fw-bold">نویسنده <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="author" name="author" required>
+                            </div>
+
+                            <!-- Translator -->
+                            <div class="mb-3">
+                                <label for="translator" class="form-label fw-bold">مترجم</label>
+                                <input type="text" class="form-control" id="translator" name="translator">
+                            </div>
+
+                            <!-- Description -->
+                            <div class="mb-3">
+                                <label for="body" class="form-label fw-bold"> توضیحات کتاب <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="body" name="body" rows="5"></textarea>
                             </div>
                         </div>
 
-                        <!-- Categories -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">دسته‌بندی‌ها</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="category1" name="categories" value="ادبیات">
-                                <label class="form-check-label" for="category1">ادبیات</label>
+                        <!-- Book Cover Section -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary mb-3"><i class="bi bi-image"></i> تصویر جلد</h6>
+                            <div class="mb-3">
+                                <label for="cover" class="form-label fw-bold">تصویر جلد کتاب</label>
+                                <input class="form-control" type="file" id="cover" name="cover" accept="image/*">
+                                <div class="form-text">فرمت‌های مجاز: JPG, PNG, WEBP. حداکثر حجم: 2MB</div>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="category2" name="categories" value="تاریخ">
-                                <label class="form-check-label" for="category2">تاریخ</label>
+                        </div>
+
+                        <!-- Publication Details Section -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary mb-3"><i class="bi bi-journal-bookmark"></i> مشخصات انتشار</h6>
+                            <div class="row">
+                                <!-- Publisher -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="publisher" class="form-label fw-bold">ناشر</label>
+                                    <input type="text" class="form-control" id="publisher" name="publisher">
+                                </div>
+                                
+                                <!-- Year -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="year" class="form-label fw-bold">سال انتشار</label>
+                                    <input type="number" class="form-control" id="year" name="year" min="1300" max="1402">
+                                </div>
+                                
+                                <!-- Shabak Number -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="shabak_num" class="form-label fw-bold">شماره شابک</label>
+                                    <input type="text" class="form-control" id="shabak_num" name="shabak_num" placeholder="مثال: 978-964-365-345-2">
+                                </div>
+                                
+                                <!-- Page Number -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="page_num" class="form-label fw-bold">تعداد صفحات</label>
+                                    <input type="number" class="form-control" id="page_num" name="page_num" min="1">
+                                </div>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="category3" name="categories" value="علمی">
-                                <label class="form-check-label" for="category3">علمی</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="category4" name="categories" value="خودیاری">
-                                <label class="form-check-label" for="category4">خودیاری</label>
+                        </div>
+
+                        <!-- Pricing and Category Section -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary mb-3"><i class="bi bi-tags"></i> دسته‌بندی و قیمت</h6>
+                            <div class="row">
+                                <!-- Price -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="price" class="form-label fw-bold">قیمت (تومان)</label>
+                                    <input type="number" class="form-control" id="price" name="price" min="0">
+                                </div>
+                                
+                                <!-- Category -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="category" class="form-label fw-bold">دسته‌بندی</label>
+                                    <input type="text" class="form-control" id="category" name="category">
+
+                                </div>
                             </div>
                         </div>
 
@@ -101,13 +131,13 @@
                         <h6><i class="bi bi-lightbulb"></i> نکات مهم:</h6>
                         <ul class="mb-0">
                             <li>فیلدهای دارای علامت <span class="text-danger">*</span> اجباری هستند</li>
-                            <li>عنوان کتاب باید دقیق و کامل باشد</li>
-                            <li>نام نویسنده را به صورت کامل وارد کنید</li>
+                            <li>اطلاعات را دقیق و کامل وارد کنید</li>
+                            <li>برای کتاب‌های ترجمه شده، نام مترجم را حتما وارد کنید</li>
                         </ul>
                     </div>
                     <div class="alert alert-light">
-                        <h6><i class="bi bi-images"></i> تصویر جلد:</h6>
-                        <p class="mb-0">تصویر باید با کیفیت و واضح باشد. حجم تصویر نباید از 2MB بیشتر باشد.</p>
+                        <h6><i class="bi bi-currency-exchange"></i> راهنمای قیمت:</h6>
+                        <p class="mb-0">قیمت باید به تومان و بدون علامت ممیز یا نقطه وارد شود. مثال: ۱۵۰۰۰۰</p>
                     </div>
                 </div>
             </div>
@@ -123,14 +153,14 @@
                                 <h6 class="mb-1">اثر مرکب</h6>
                                 <small>3 روز پیش</small>
                             </div>
-                            <p class="mb-1 small text-muted">دارن هاردی</p>
+                            <p class="mb-1 small text-muted">دارن هاردی | ۱۵۰,۰۰۰ تومان</p>
                         </a>
                         <a href="#" class="list-group-item list-group-item-action">
                             <div class="d-flex w-100 justify-content-between">
                                 <h6 class="mb-1">جاناتان مرغ دریایی</h6>
                                 <small>1 هفته پیش</small>
                             </div>
-                            <p class="mb-1 small text-muted">ریچارد باخ</p>
+                            <p class="mb-1 small text-muted">ریچارد باخ | ۱۲۰,۰۰۰ تومان</p>
                         </a>
                     </div>
                 </div>

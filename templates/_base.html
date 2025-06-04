@@ -21,7 +21,7 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
     <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="#">
+        <a class="navbar-brand d-flex align-items-center" href="{% url "books:book_list" %}">
             <i class="bi bi-book-half fs-3 me-2"></i>
             <span class="fw-bold">کتاب یار</span>
         </a>
@@ -32,12 +32,12 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">
+                    <a class="nav-link active" aria-current="page" href="{% url "books:book_list" %}">
                         <i class="bi bi-house-door-fill me-1"></i>خانه
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{% url "books:book_create" %}">
                         <i class="bi bi-plus-circle-fill me-1"></i>اضافه کردن کتاب
                     </a>
                 </li>

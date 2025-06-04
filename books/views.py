@@ -8,6 +8,7 @@ class BookListView(generic.ListView):
     model = Book
     template_name = "books/book_list_page.html"    
     context_object_name = 'books'
+    paginate_by = 2
 
     def get_queryset(self):
         return Book.objects.all().order_by('-modified_datetime')
