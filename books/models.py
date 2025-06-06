@@ -1,29 +1,105 @@
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-
+from django.core.validators import RegexValidator
+from django.utils.text import slugify
 
 
 class Book(models.Model):
     UserModel = get_user_model()
 
-    user = models.ForeignKey(UserModel, on_delete=models.PROTECT, related_name='book')
-    title = models.CharField(verbose_name='title', max_length=50)
-    body = models.TextField(verbose_name='description')
-    author = models.CharField(verbose_name='author', max_length=30)
-    category = models.CharField(verbose_name='category', max_length=50, null=True)
-    page_num = models.PositiveIntegerField(verbose_name='page number', null=True)
-    shabak_num = models.CharField(verbose_name="shabak number", max_length=20, unique=True, null=True)
-    publisher = models.CharField(verbose_name='publisher', max_length=20, null=True)
-    translator = models.CharField(verbose_name='translator', max_length=30, null=True)
-    year = models.DateField(verbose_name='year of publish', null=True, blank=True)
-    cover = models.ImageField(upload_to='covers', blank=True, null=True)
-    price = models.DecimalField(verbose_name='price', max_digits=6, decimal_places=2)
-    created_datetime = models.DateTimeField(auto_now_add=True)
-    modified_datetime = models.DateTimeField(auto_now=True)
+    user = models.ForeignKey(
+        UserModel,
+        on_delete=models.PROTECT,
+        related_name='books',
+        verbose_name='کاربر'
+    )
+    title = models.CharField(max_length=50, verbose_name='عنوان')
+    slug = models.SlugField(max_length=50, unique=True, allow_unicode=True, verbose_name='اسلاگ', blank=True, null=True)
+    body = models.TextField(verbose_name='توضیحات')
+    author = models.CharField(max_length=50, verbose_name='نویسنده')
+    category = models.CharField(max_length=50, verbose_name='دسته بندی', null=True)
+    page_num = models.PositiveIntegerField(null=True, blank=True, verbose_name='تعداد صفحه')
+    shabak_num = models.CharField(
+        max_length=50,
+        unique=True,
+        null=True,
+        blank=True,
+        validators=[RegexValidator(r'^\d{10,13}$', 'شابک باید ۱۰ یا ۱۳ رقمی باشد.')],
+        verbose_name='شابک'
+    )
+    publisher = models.CharField(max_length=50, null=True, blank=True, verbose_name='ناشر')
+    translator = models.CharField(max_length=50, null=True, blank=True, verbose_name='مترجم')
+    year = models.DateField(null=True, blank=True, verbose_name='سال انتشار')
+    cover = models.ImageField(upload_to='covers/', blank=True, null=True, verbose_name='جلد')
+    price = models.PositiveIntegerField(null=True, blank=True, verbose_name='قیمت')
+    language = models.CharField(max_length=50, default='فارسی', verbose_name='زبان', null=True)
+    status = models.CharField(
+        max_length=30,
+        choices=[('readed', 'خوانده شده'), ('borrowed', 'قرض داده شده'), ('not readed', 'خوانده نشده')],
+        default='readed',
+        verbose_name='وضعیت'
+    )
+    average_rating = models.FloatField(default=0.0, verbose_name='میانگین امتیاز')
+    review_count = models.PositiveIntegerField(default=0, verbose_name='تعداد نظرات')
+    created_datetime = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
+    modified_datetime = models.DateTimeField(auto_now=True, verbose_name='تاریخ ویرایش')
+
+    class Meta:
+        verbose_name = 'کتاب'
+        verbose_name_plural = 'کتاب‌ها'
+        indexes = [
+            models.Index(fields=['title']),
+            models.Index(fields=['author']),
+            models.Index(fields=['shabak_num']),
+        ]
 
     def __str__(self):
-        return self.title
-        
+        return f"{self.title} - {self.author}"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title, allow_unicode=True)
+        super().save(*args, **kwargs)
+
     def get_absolute_url(self):
         return reverse("books:book_detail", args=[self.id])
+
+    def update_rating(self):
+        reviews = self.reviews.all()
+        self.review_count = reviews.count()
+        self.average_rating = reviews.aggregate(models.Avg('rating'))['rating__avg'] or 0.0
+        self.save()
+
+
+class Review(models.Model):
+    book = models.ForeignKey(
+        Book,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='کتاب'
+    )
+    user = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='کاربر'
+    )
+    rating = models.PositiveIntegerField(
+        choices=[(i, str(i)) for i in range(1, 6)],
+        verbose_name='امتیاز'
+    )
+    comment = models.TextField(verbose_name='نظر')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
+    modified_at = models.DateTimeField(auto_now=True, verbose_name='تاریخ ویرایش')
+
+    class Meta:
+        verbose_name = 'نظر'
+        verbose_name_plural = 'نظرات'
+        unique_together = [['book', 'user']]  # Prevent multiple reviews by same user
+        indexes = [
+            models.Index(fields=['book', 'user']),
+        ]
+
+    def __str__(self):
+        return f"نظر {self.user.username} برای {self.book.title}"

@@ -1,0 +1,60 @@
+.container {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+.card {
+    border-radius: 0.75rem;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+}
+
+.card-header {
+    border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.btn-primary {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    border-radius: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #2563eb;
+    border-color: #2563eb;
+}
+
+.btn-primary:disabled {
+    background-color: #93c5fd;
+    border-color: #93c5fd;
+}
+
+.btn-outline-secondary {
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.animate__fadeIn {
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@media (max-width: 576px) {
+    .card-header h5 {
+        font-size: 1.1rem;
+    }
+    .btn {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+    }
+}

@@ -1,28 +1,30 @@
-<!doctype html>
+{% load static %}
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="کتابخانه آنلاین کتاب یار - مجموعه ای از بهترین کتاب ها">
+    <meta name="keywords" content="کتاب یار, کتابخانه آنلاین, کتاب, مطالعه, ادبیات">
+    <meta name="author" content="کتاب یار">
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+    <title>{% block title %}کتاب یار{% endblock title %}</title>
 
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous">
+    <!-- Vazirmatn Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
     {% block style %}{% endblock style %}
-
-    <title>{% block title %}{% endblock title %}</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
     <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="{% url "books:book_list" %}">
-            <i class="bi bi-book-half fs-3 me-2"></i>
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'books:book_list' %}">
+            <i class="fas fa-book-open fs-3 me-2"></i>
             <span class="fw-bold">کتاب یار</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -30,36 +32,57 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url "books:book_list" %}">
-                        <i class="bi bi-house-door-fill me-1"></i>خانه
+                    <a class="nav-link" aria-current="page" href="{% url 'books:book_list' %}">
+                        <i class="fas fa-home me-1"></i> خانه
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url "books:book_create" %}">
-                        <i class="bi bi-plus-circle-fill me-1"></i>اضافه کردن کتاب
+                    <a class="nav-link" href="{% url 'books:book_create' %}">
+                        <i class="fas fa-plus-circle me-1"></i> اضافه کردن کتاب
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">
-                        <i class="bi bi-search me-1"></i>جستجو
+                        <i class="fas fa-magnifying-glass me-1"></i> جستجو
                     </a>
                 </li>
             </ul>
             <div class="d-flex align-items-center">
                 <div class="text-white me-3">
-                    <i class="bi bi-person-circle me-1"></i>
-                    <span>خوش آمدی محمدهادی</span> | 
-                    <a class="link-light text-decoration-none me-1" href="#">
-                        <i class="bi bi-box-arrow-left"></i> خروج
-                    </a>
+                    {% if user.is_authenticated %}
+                        <i class="fas fa-user-circle me-1"></i>
+                        <span>خوش آمدی {{ user.username }}</span> |
+                        <a class="link-light text-decoration-none ms-1" href="{% url 'account_logout' %}">
+                            <i class="fas fa-sign-out-alt me-1"></i> خروج
+                        </a>
+                    {% else %}
+                        <a class="link-light text-decoration-none me-1" href="{% url 'account_login' %}">
+                            <i class="fas fa-sign-in-alt me-1"></i> ورود
+                        </a>
+                        <span>|</span>
+                        <a class="link-light text-decoration-none ms-1" href="{% url 'account_signup' %}">
+                            <i class="fas fa-user-plus me-1"></i> ثبت نام
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </nav>
 
+<!-- Messages Block -->
+{% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 
 {% block content %}{% endblock content %}
 
@@ -83,22 +106,28 @@
             <div class="col-md-4">
                 <h5 class="fw-bold">تماس با ما</h5>
                 <ul class="list-unstyled text-muted">
-                    <li><i class="bi bi-envelope-fill me-2"></i> info@ketabyar.com</li>
-                    <li><i class="bi bi-telephone-fill me-2"></i> ۰۲۱-۱۲۳۴۵۶۷۸</li>
+                    <li><i class="fas fa-envelope me-2"></i> info@ketabyar.com</li>
+                    <li><i class="fas fa-phone me-2"></i> ۰۲۱-۱۲۳۴۵۶۷۸</li>
                 </ul>
+                <div class="mt-3">
+                    <a href="#" class="text-muted me-3"><i class="fab fa-telegram fs-4"></i></a>
+                    <a href="#" class="text-muted me-3"><i class="fab fa-instagram fs-4"></i></a>
+                    <a href="#" class="text-muted"><i class="fab fa-twitter fs-4"></i></a>
+                </div>
             </div>
         </div>
         <hr class="my-4">
-        <div class="text-center text-muted small">
-            <p>تمامی حقوق برای <a href="https://codingyar.com/" target="_blank" class="text-decoration-none">کدینگ یار</a> محفوظ است © ۱۴۰۲</p>
+        <div class="text�-center text-muted small">
+            <p>تمامی حقوق برای <a href="https://codingyar.com/" target="_blank" class="text-decoration-none">کدینگ یار</a> محفوظ است © ۱۴۰۴</p>
         </div>
     </div>
 </footer>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-        crossorigin="anonymous"></script>
-
+<!-- Bootstrap JS and jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<!-- Custom JS -->
+<script src="{% static 'js/base.js' %}"></script>
+{% block script %}{% endblock script %}
 </body>
 </html>

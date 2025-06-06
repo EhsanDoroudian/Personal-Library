@@ -1,108 +1,135 @@
-{% extends "_base.html" %}
+{% extends '_base.html' %}
 {% load static %}
 
-{% block title %}کتاب یار|{{book.title}}{% endblock title %}
+{% block title %}کتاب یار | {{ book.title }}{% endblock title %}
 
-
-{% block style %}<link rel="stylesheet" href="{% static "css/book_detail.css" %}">{% endblock style %}
-
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/book_detail.css' %}">
+{% endblock style %}
 
 {% block content %}
-
-<main class="container my-5">
-    <div class="row">
+<main class="container py-5">
+    <div class="row g-4">
         <!-- Book Cover Column -->
-        <div class="col-md-4 mb-4">
-            <div class="book-cover-container shadow-lg">
-                {% if book.cover %}{% endif %}
-                <img src="{{book.cover.url}}" 
-                     alt="{{book.title}}" class="img-fluid rounded">
+        <div class="col-md-4 mb-4 animate__fadeInLeft">
+            <div class="book-cover-container shadow-lg rounded-3">
+                {% if book.cover %}
+                    <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="img-fluid rounded-3 h-100 object-fit-cover">
+                {% else %}
+                    <div class="h-100 d-flex align-items-center justify-content-center bg-light rounded-3">
+                        <i class="fas fa-book-open fs-1 text-muted"></i>
+                    </div>
+                {% endif %}
             </div>
         </div>
 
         <!-- Book Details Column -->
-        <div class="col-md-8">
+        <div class="col-md-8 animate__fadeInRight">
             <div class="book-header mb-4">
-                <h1 class="book-title">{{book.title}}</h1>
-                <div class="book-meta">
-                    <span class="author"><i class="bi bi-person"></i> نویسنده: {{book.author}}</span>
-                    <span class="author"><i class="bi bi-person"></i> مترحم: {{book.translator}}</span>
-                    <span class="author"><i class="bi bi-person"></i> انتشارات: {{book.publisher}}</span>
-                    <span class="category"><i class="bi bi-tag"></i> دسته: {{book.category}}</span>
-                    <span class="pages"><i class="bi bi-file-text"></i> {{book.page_num}} صفحه</span>
+                <h1 class="book-title fw-bold text-primary">{{ book.title }}</h1>
+                <div class="book-meta mb-3">
+                    <span class="author"><i class="fas fa-user-pen me-1"></i> نویسنده: {{ book.author }}</span>
+                    {% if book.translator %}
+                        <span class="translator"><i class="fas fa-language me-1"></i> مترجم: {{ book.translator }}</span>
+                    {% endif %}
+                    <span class="publisher"><i class="fas fa-building me-1"></i> انتشارات: {{ book.publisher }}</span>
+                    <span class="category"><i class="fas fa-tag me-1"></i> دسته: {{ book.category }}</span>
+                    <span class="pages"><i class="fas fa-file-text me-1"></i> {{ book.page_num }} صفحه</span>
                 </div>
-                {% comment %} <div class="rating mt-2">
-                    <i class="bi bi-star-fill text-warning"></i>
-                    <i class="bi bi-star-fill text-warning"></i>
-                    <i class="bi bi-star-fill text-warning"></i>
-                    <i class="bi bi-star-fill text-warning"></i>
-                    <i class="bi bi-star-half text-warning"></i>
-                    <span class="ms-2">۴.۵ از ۵ (۱۲۸ نظر)</span>
-                </div> {% endcomment %}
+                <div class="rating mt-2 d-flex align-items-center">
+                    <div class="stars me-2">
+                        {% for i in "12345" %}
+                            {% if i|add:0 <= book.average_rating|add:0 %}
+                                <i class="fas fa-star text-warning"></i>
+                            {% elif i|add:0 <= book.average_rating|add:0.5 %}
+                                <i class="fas fa-star-half-alt text-warning"></i>
+                            {% else %}
+                                <i class="far fa-star text-warning"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <span class="text-muted">{{ book.average_rating|floatformat:1 }} از ۵ ({{ book.review_count }} نظر)</span>
+                </div>
             </div>
 
-            <div class="book-description card mb-4">
+            <div class="book-description card mb-4 shadow-sm">
                 <div class="card-body">
-                    <h3 class="card-title"><i class="bi bi-book"></i> درباره کتاب</h3>
-                    <p class="card-text">
-                        {{book.body}}
-                    </p>
+                    <h3 class="card-title fw-bold"><i class="fas fa-book me-1"></i> درباره کتاب</h3>
+                    <p class="card-text">{{ book.body }}</p>
                 </div>
             </div>
 
-            <div class="book-details card mb-4">
+            <div class="book-details card mb-4 shadow-sm">
                 <div class="card-body">
-                    <h3 class="card-title"><i class="bi bi-info-circle"></i> جزئیات کتاب</h3>
+                    <h3 class="card-title fw-bold"><i class="fas fa-info-circle me-1"></i> جزئیات کتاب</h3>
                     <div class="row">
                         <div class="col-md-6">
-                            <p><strong>ناشر:</strong> انتشارات {{book.publisher}}</p>
-                            <p><strong>سال انتشار:</strong> {{book.year}}</p>
+                            <p><strong>ناشر:</strong> انتشارات {{ book.publisher }}</p>
+                            <p><strong>سال انتشار:</strong> {{ book.year }}</p>
                         </div>
                         <div class="col-md-6">
-                            <p><strong>شابک:</strong> {{book.shabak_num}}</p>
-                            <p><strong>زبان:</strong> فارسی</p>
+                            <p><strong>شابک:</strong> {{ book.shabak_num }}</p>
+                            <p><strong>زبان:</strong> {{book.language}}</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="reviews card">
+            <div class="reviews card shadow-sm">
                 <div class="card-body">
-                    <h3 class="card-title"><i class="bi bi-chat-left-text"></i> نظرات خوانندگان</h3>
-                    
-                    <div class="review mb-4">
-                        <div class="review-header d-flex justify-content-between">
-                            <strong>نوشته توکل</strong>
-                            <small class="text-muted">۱۴۰۲/۰۵/۱۵</small>
+                    <h3 class="card-title fw-bold"><i class="fas fa-comment-dots me-1"></i> نظرات خوانندگان</h3>
+                    {% for review in book.reviews.all %}
+                        <div class="review mb-4 animate__fadeIn">
+                            <div class="review-header d-flex justify-content-between align-items-center">
+                                <strong>{{ review.user.username }}</strong>
+                                <small class="text-muted">{{ review.created_at|date:"Y/m/d" }}</small>
+                            </div>
+                            <div class="review-body mt-2">
+                                <p>{{ review.comment }}</p>
+                            </div>
                         </div>
-                        <div class="review-body mt-2">
-                            <p>
-                                با سخ چند نگفته صحراستم یکی اول اینکه من چه دسته از آزمایش بود که می‌کنیم کدام، خودرو ناشر به نامه که آخر کتابو بگیرد مستمر و جنوبه اما واقعاً ممکن می‌رسد او نیست کافی خودش دارد. حرف مثل شبکه امیدوار بود؟ در مواقع ترجمه معمول با... کافی‌های خودش که مبارزه بود که طلب بود؟
-                            </p>
-                        </div>
-                    </div>
+                    {% empty %}
+                        <p class="text-muted">هنوز نظری برای این کتاب ثبت نشده است.</p>
+                    {% endfor %}
 
-                    <div class="review mb-4">
-                        <div class="review-header d-flex justify-content-between">
-                            <strong>نوشته توکل</strong>
-                            <small class="text-muted">۱۴۰۲/۰۵/۱۰</small>
+                    {% if user.is_authenticated %}
+                        <div class="add-review mt-4">
+                            <h5 class="fw-bold">نظر خود را بنویسید</h5>
+                            <form id="reviewForm" method="post" novalidate>
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="rating" class="form-label">امتیاز:</label>
+                                    <select class="form-select" id="rating" name="rating" required>
+                                        <option value="" disabled selected>امتیاز را انتخاب کنید</option>
+                                        <option value="1">۱ ستاره</option>
+                                        <option value="2">۲ ستاره</option>
+                                        <option value="3">۳ ستاره</option>
+                                        <option value="4">۴ ستاره</option>
+                                        <option value="5">۵ ستاره</option>
+                                    </select>
+                                    <div class="invalid-feedback">لطفاً یک امتیاز انتخاب کنید.</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="comment" class="form-label">نظر شما:</label>
+                                    <textarea class="form-control" id="comment" name="comment" rows="4" placeholder="نظر شما درباره این کتاب..." required></textarea>
+                                    <div class="invalid-feedback">لطفاً نظر خود را وارد کنید.</div>
+                                </div>
+                                <button type="submit" class="btn btn-primary" id="submitReview">
+                                    <span class="button-text">ارسال نظر</span>
+                                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                </button>
+                            </form>
                         </div>
-                        <div class="review-body mt-2">
-                            <p>
-                                با سخ چند نگفته صحراستم یکی اول اینکه من چه دسته از آزمایش بود که می‌کنیم کدام، خودرو ناشر به نامه که آخر کتابو بگیرد مستمر و جنوبه اما واقعاً ممکن می‌رسد او نیست کافی خودش دارد. حرف مثل شبکه امیدوار بود؟ در مواقع ترجمه معمول با... کافی‌های خودش که مبارزه بود که طلب بود؟
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="add-review mt-4">
-                        <h5>نظر خود را بنویسید</h5>
-                        <textarea class="form-control mb-2" rows="3" placeholder="نظر شما درباره این کتاب..."></textarea>
-                        <button class="btn btn-primary">ارسال نظر</button>
-                    </div>
+                    {% else %}
+                        <p class="text-muted mt-4">برای ثبت نظر، لطفاً <a href="{% url 'account_login' %}">وارد شوید</a>.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </main>
-
 {% endblock content %}
+
+{% block script %}
+    <script src="{% static 'js/book_detail.js' %}"></script>
+{% endblock script %}
