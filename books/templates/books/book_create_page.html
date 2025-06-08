@@ -99,7 +99,7 @@
                                 <!-- Year -->
                                 <div class="col-md-6 mb-3">
                                     <label for="year" class="form-label fw-bold">سال انتشار</label>
-                                    <input type="number" class="form-control" id="year" name="year" min="2000" max="2025" value="{{ form.year.value|default_if_none:'' }}">
+                                    <input type="number" class="form-control" id="year" name="year" min="1300" max="1404" value="{{ form.year.value|default_if_none:'' }}">
                                     {% if form.year.errors %}
                                         <div class="invalid-feedback d-block">{{ form.year.errors.0 }}</div>
                                     {% endif %}

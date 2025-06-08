@@ -18,13 +18,12 @@ class Book(models.Model):
     slug = models.SlugField(max_length=50, unique=True, allow_unicode=True, verbose_name='اسلاگ', blank=True, null=True)
     body = models.TextField(verbose_name='توضیحات')
     author = models.CharField(max_length=50, verbose_name='نویسنده')
-    category = models.CharField(max_length=50, verbose_name='دسته بندی', null=True)
+    category = models.CharField(max_length=50, verbose_name='دسته بندی', blank=True)
     page_num = models.PositiveIntegerField(null=True, blank=True, verbose_name='تعداد صفحه')
     shabak_num = models.CharField(
         max_length=16,
         unique=True,
         null=True,
-        blank=True,
         validators=[RegexValidator(r'^\d{10,13}$', 'شابک باید ۱۰ یا ۱۳ رقمی باشد.')],
         verbose_name='شابک'
     )

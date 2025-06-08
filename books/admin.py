@@ -7,7 +7,7 @@ from django.contrib import admin
 class BookAdmin(admin.ModelAdmin):
     list_display = ['title', 'author', 'category', 'average_rating', 'created_datetime']
     list_filter = ['category', 'language', 'status']
-    search_fields = ['title', 'author', 'shabak_num']
+    search_fields = ['title', 'author', ]
     prepopulated_fields = {'slug': ('title',)}
 
 

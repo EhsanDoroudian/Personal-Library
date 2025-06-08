@@ -173,9 +173,9 @@
                                 <div class="col-md-6 mb-3">
                                     <label for="status" class="form-label fw-bold">وضعیت</label>
                                     <select class="form-select" id="status" name="status">
-                                        <option value="available" {% if form.status.value|default:book.status == 'available' %}selected{% endif %}>موجود</option>
-                                        <option value="borrowed" {% if form.status.value|default:book.status == 'borrowed' %}selected{% endif %}>قرض داده شده</option>
-                                        <option value="archived" {% if form.status.value|default:book.status == 'archived' %}selected{% endif %}>آرشیو شده</option>
+                                        <option value="readed" {% if form.status.value == 'available' %}selected{% endif %}>خوانده شده</option>
+                                        <option value="borrowed" {% if form.status.value == 'borrowed' %}selected{% endif %}>قرض داده شده</option>
+                                        <option value="not readed" {% if form.status.value == 'archived' %}selected{% endif %}>خوانده نشده</option>
                                     </select>
                                     {% if form.status.errors %}
                                         <div class="invalid-feedback d-block">{{ form.status.errors.0 }}</div>

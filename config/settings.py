@@ -157,8 +157,6 @@ LOGOUT_REDIRECT_URL = "books:book_list"
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 ACCOUNT_SESSION_REMEMBER = False
-ACCOUNT_AUTHENTICATION_METHOD = "email"  # Changed from ACCOUNT_LOGIN_METHODS
-ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_LOGIN_ON_PASSWORD_RESET = False
