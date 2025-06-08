@@ -1,43 +1,86 @@
-{% extends "_base.html" %}
+{% extends '_base.html' %}
 {% load static %}
 
-{% block title %}ورود به سیستم{% endblock title %}
+{% block title %}کتاب یار | ورود{% endblock title %}
 
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/account_login.css' %}">
+{% endblock style %}
 
-{% block content%}
-<div class="container d-flex justify-content-center align-items-center min-vh-100">
-    <div class="col-xl-4 col-lg-5 col-md-6 col-sm-8 bg-white p-4 rounded-4 shadow-lg animate__fadeIn">
-        <form id="loginForm" method="post" novalidate>
-            <h1 class="text-center mb-4 fw-bold text-primary">ورود به سیستم</h1>
-            {% csrf_token %}
-            <div class="form-group mb-3">
-                <label for="emailAddress" class="form-label fw-medium">ایمیل:</label>
-                <input type="email" class="form-control" id="emailAddress" name="email" placeholder="example@gmail.com" required>
-                <div class="invalid-feedback">لطفاً یک ایمیل معتبر وارد کنید.</div>
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5 animate__fadeIn">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center">
+                    <h5 class="mb-0"><i class="fas fa-sign-in-alt me-2"></i> ورود به کتاب یار</h5>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Display Non-Field Errors -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <form method="POST" action="{% url 'account_login' %}" id="loginForm" novalidate>
+                        {% csrf_token %}
+                        {% if redirect_field_value %}
+                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+                        {% endif %}
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="id_login" class="form-label fw-bold">ایمیل <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="id_login" name="login" value="{{ form.login.value|default_if_none:'' }}" required autofocus>
+                            {% if form.login.errors %}
+                                <div class="invalid-feedback d-block">{{ form.login.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label for="id_password" class="form-label fw-bold">رمز عبور <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="id_password" name="password" required>
+                            {% if form.password.errors %}
+                                <div class="invalid-feedback d-block">{{ form.password.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Remember Me -->
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="id_remember" name="remember">
+                            <label class="form-check-label" for="id_remember">مرا به خاطر بسپار</label>
+                        </div>
+
+                        <!-- Submit and Cancel -->
+                        <div class="d-flex justify-content-center gap-3 mt-4">
+                            <a href="{% url 'books:book_list' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times-circle me-1"></i> انصراف
+                            </a>
+                            <button type="submit" class="btn btn-primary" id="submitLogin">
+                                <span class="button-text"><i class="fas fa-sign-in-alt me-1"></i> ورود</span>
+                                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Links -->
+                    <p class="text-center mt-4">
+                        حساب کاربری ندارید؟ <a href="{% url 'account_signup' %}" class="text-primary">ثبت‌نام کنید</a>
+                    </p>
+                    <p class="text-center">
+                        رمز عبور خود را فراموش کرده‌اید؟ <a href="{% url 'account_reset_password' %}" class="text-primary">بازیابی رمز</a>
+                    </p>
+                </div>
             </div>
-            <div class="form-group mb-3 position-relative">
-                <label for="password" class="form-label fw-medium">رمز عبور:</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="رمز عبور خود را وارد کنید" required>
-                <i class="fas fa-eye toggle-password position-absolute" style="left: 10px; top: 70%; cursor: pointer;"></i>
-                <div class="invalid-feedback">لطفاً رمز عبور خود را وارد کنید。</div>
-            </div>
-            <div class="d-flex justify-content-end mb-3">
-                <a href="#" class="text-decoration-none text-primary fw-medium">فراموشی رمز عبور؟</a>
-            </div>
-            <button type="submit" class="btn btn-success w-100 mb-3" id="submitButton">
-                <span class="button-text">ورود</span>
-                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-            </button>
-            <div class="line-with-middle-sep text-center my-3">
-                <span class="bg-white px-2">یا</span>
-            </div>
-            <a href="/register" class="btn btn-outline-primary w-100">ثبت نام</a>
-        </form>
+        </div>
     </div>
 </div>
 {% endblock content %}
 
-
 {% block script %}
-<script src="{% static 'js/login.js' %}"></script>
+    <script src="{% static 'js/account_login.js' %}"></script>
 {% endblock script %}

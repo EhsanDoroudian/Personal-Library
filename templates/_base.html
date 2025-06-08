@@ -7,7 +7,6 @@
     <meta name="description" content="کتابخانه آنلاین کتاب یار - مجموعه ای از بهترین کتاب ها">
     <meta name="keywords" content="کتاب یار, کتابخانه آنلاین, کتاب, مطالعه, ادبیات">
     <meta name="author" content="کتاب یار">
-    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
     <title>{% block title %}کتاب یار{% endblock title %}</title>
 
     <!-- Bootstrap CSS -->
@@ -44,9 +43,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="fas fa-magnifying-glass me-1"></i> جستجو
-                    </a>
+                    <form class="d-flex" method="GET" action="{% url 'books:book_search' %}">
+                        {% csrf_token %}
+                        <input class="form-control me-2" type="search" name="q" placeholder="جستجو..." aria-label="Search">
+                        <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i></button>
+                    </form>
                 </li>
             </ul>
             <div class="d-flex align-items-center">

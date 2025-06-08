@@ -21,7 +21,7 @@ class Book(models.Model):
     category = models.CharField(max_length=50, verbose_name='دسته بندی', null=True)
     page_num = models.PositiveIntegerField(null=True, blank=True, verbose_name='تعداد صفحه')
     shabak_num = models.CharField(
-        max_length=50,
+        max_length=16,
         unique=True,
         null=True,
         blank=True,
@@ -30,7 +30,7 @@ class Book(models.Model):
     )
     publisher = models.CharField(max_length=50, null=True, blank=True, verbose_name='ناشر')
     translator = models.CharField(max_length=50, null=True, blank=True, verbose_name='مترجم')
-    year = models.DateField(null=True, blank=True, verbose_name='سال انتشار')
+    year = models.PositiveIntegerField(null=True, blank=True, verbose_name='سال انتشار')  # Changed to PositiveIntegerField
     cover = models.ImageField(upload_to='covers/', blank=True, null=True, verbose_name='جلد')
     price = models.PositiveIntegerField(null=True, blank=True, verbose_name='قیمت')
     language = models.CharField(max_length=50, default='فارسی', verbose_name='زبان', null=True)
