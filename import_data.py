@@ -1,8 +1,5 @@
 import openpyxl
-import datetime
 import pandas as pd
-import datetime
-import jdatetime
 from django.contrib.auth import get_user_model
 from books.models import Book  
 
@@ -31,7 +28,7 @@ def import_books_from_ods(filepath, user_email):
             category = row["category"]
             page_num = int(row["page_num"]) if not pd.isna(row["page_num"]) else None
             shabak_num = row["shabak_num"]
-            year = int(row["year"]) if not pd.isna(row["year"]) else None
+            year = row["year"]
             price = float(row["price"])
 
             if not title or not shabak_num:
@@ -41,13 +38,6 @@ def import_books_from_ods(filepath, user_email):
             if Book.objects.filter(shabak_num=shabak_num).exists():
                 print(f"[⚠️ تکراری] ردیف {idx+2}: shabak_num {shabak_num}")
                 continue
-
-            # تبدیل تاریخ شمسی به میلادی
-            try:
-                publish_date = jdatetime.date(year, 1, 1).togregorian() if year else None
-            except Exception:
-                print(f"[⚠️ تاریخ نامعتبر] year={year} در ردیف {idx+2}")
-                publish_date = None
 
             Book.objects.create(
                 user=user,
@@ -59,7 +49,7 @@ def import_books_from_ods(filepath, user_email):
                 category=category,
                 page_num=page_num,
                 shabak_num=shabak_num,
-                year=publish_date,
+                year=year,
                 price=price,
             )
 
@@ -93,11 +83,6 @@ def import_books_from_excel(filepath, user_email):
             print(f"[⚠️ تکراری] ردیف {idx}: shabak_num {shabak_num} قبلاً ثبت شده.")
             continue
 
-        try:
-            publish_date = datetime.date(int(year), 1, 1) if year else None
-        except ValueError:
-            publish_date = None
-
         book = Book.objects.create(
             user=user,
             title=title,
@@ -108,7 +93,7 @@ def import_books_from_excel(filepath, user_email):
             category=category,
             page_num=page_num,
             shabak_num=shabak_num,
-            year=publish_date,
+            year=year,
             price=price
         )
 

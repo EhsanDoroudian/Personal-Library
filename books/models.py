@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
 from django.utils.text import slugify
+from django.db.models import Count, Avg
 
 
 class Book(models.Model):
@@ -27,8 +28,8 @@ class Book(models.Model):
         validators=[RegexValidator(r'^\d{10,13}$', 'شابک باید ۱۰ یا ۱۳ رقمی باشد.')],
         verbose_name='شابک'
     )
-    publisher = models.CharField(max_length=50, null=True, blank=True, verbose_name='ناشر')
-    translator = models.CharField(max_length=50, null=True, blank=True, verbose_name='مترجم')
+    publisher = models.CharField(max_length=50, blank=True, verbose_name='ناشر')
+    translator = models.CharField(max_length=50, blank=True, verbose_name='مترجم')
     year = models.PositiveIntegerField(null=True, blank=True, verbose_name='سال انتشار')  # Changed to PositiveIntegerField
     cover = models.ImageField(upload_to='covers/', blank=True, null=True, verbose_name='جلد')
     price = models.PositiveIntegerField(null=True, blank=True, verbose_name='قیمت')
@@ -52,7 +53,8 @@ class Book(models.Model):
             models.Index(fields=['author']),
             models.Index(fields=['shabak_num']),
         ]
-
+        unique_together = [['title', 'author']]
+        
     def __str__(self):
         return f"{self.title} - {self.author}"
 
@@ -65,11 +67,13 @@ class Book(models.Model):
         return reverse("books:book_detail", args=[self.id])
 
     def update_rating(self):
-        reviews = self.reviews.all()
-        self.review_count = reviews.count()
-        self.average_rating = reviews.aggregate(models.Avg('rating'))['rating__avg'] or 0.0
+        aggregate_data = self.reviews.aggregate(
+            avg_rating=Avg('rating'),
+            review_total=Count('id')
+        )
+        self.average_rating = aggregate_data['avg_rating'] or 0.0
+        self.review_count = aggregate_data['review_total']
         self.save()
-
 
 class Review(models.Model):
     book = models.ForeignKey(

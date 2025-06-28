@@ -48,7 +48,7 @@
                             {% endif %}
                         {% endfor %}
                     </div>
-                    {% comment %} <span class="text-muted">{{ book.average_rating|floatformat:1 }} از ۵ ({{ book.review_count }} نظر)</span> {% endcomment %}
+                    <span class="text-muted">{{ book.average_rating|floatformat:1 }} از ۵ ({{ book.review_count }} نظر)</span>
                 </div>
             </div>
 
@@ -95,7 +95,7 @@
                     {% if user.is_authenticated %}
                         <div class="add-review mt-4">
                             <h5 class="fw-bold">نظر خود را بنویسید</h5>
-                            <form id="reviewForm" method="post" action="#" novalidate>
+                            <form id="review_form" method="post" action="{% url "books:review_create" book.pk%}" novalidate>
                                 {% csrf_token %}
                                 <div class="mb-3">
                                     <label for="rating" class="form-label">امتیاز:</label>

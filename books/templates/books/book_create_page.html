@@ -36,7 +36,7 @@
                             <!-- Book Title -->
                             <div class="mb-3">
                                 <label for="title" class="form-label fw-bold">عنوان کتاب <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="title" name="title" value="{{ form.title.value|default_if_none:'' }}" required>
+                                <input type="text" class="form-control" id="title" name="title" value="{{form.title.value|default_if_none:'' }}" required>
                                 {% if form.title.errors %}
                                     <div class="invalid-feedback d-block">{{ form.title.errors.0 }}</div>
                                 {% endif %}
