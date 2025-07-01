@@ -39,16 +39,16 @@
                 <div class="rating mt-2 d-flex align-items-center">
                     <div class="stars me-2">
                         {% for i in "12345" %}
-                            {% if i|add:0 <= book.average_rating|add:0 %}
+                            {% if i|add:0 <= avg_rating|add:0 %}
                                 <i class="fas fa-star text-warning"></i>
-                            {% elif i|add:0 <= book.average_rating|add:0.5 %}
+                            {% elif i|add:0 <= avg_rating|add:0.5 %}
                                 <i class="fas fa-star-half-alt text-warning"></i>
                             {% else %}
                                 <i class="far fa-star text-warning"></i>
                             {% endif %}
                         {% endfor %}
                     </div>
-                    <span class="text-muted">{{ book.average_rating|floatformat:1 }} از ۵ ({{ book.review_count }} نظر)</span>
+                    <span class="text-muted">{{ avg_rating|floatformat:1 }} از ۵ ({{ num_reviews }} نظر)</span>
                 </div>
             </div>
 

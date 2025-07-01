@@ -40,8 +40,6 @@ class Book(models.Model):
         default='readed',
         verbose_name='وضعیت'
     )
-    average_rating = models.FloatField(default=0.0, verbose_name='میانگین امتیاز')
-    review_count = models.PositiveIntegerField(default=0, verbose_name='تعداد نظرات')
     created_datetime = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
     modified_datetime = models.DateTimeField(auto_now=True, verbose_name='تاریخ ویرایش')
 
@@ -66,16 +64,16 @@ class Book(models.Model):
     def get_absolute_url(self):
         return reverse("books:book_detail", args=[self.id])
 
-    def update_rating(self):
-        aggregate_data = self.reviews.aggregate(
-            avg_rating=Avg('rating'),
-            review_total=Count('id')
-        )
-        self.average_rating = aggregate_data['avg_rating'] or 0.0
-        self.review_count = aggregate_data['review_total']
-        self.save()
-
 class Review(models.Model):
+    REVIEW_STATUS_WATING = 'w'
+    REVIEW_STATUS_APPROVED = 'a'
+    REVIEW_STATUS_NOT_APPROVED = 'na' 
+    REVIEW_STATUS = [
+        (REVIEW_STATUS_WATING, 'wating'),
+        (REVIEW_STATUS_APPROVED, 'approved'),
+        (REVIEW_STATUS_NOT_APPROVED, 'not approved')
+    ]
+
     book = models.ForeignKey(
         Book,
         on_delete=models.CASCADE,
@@ -93,6 +91,7 @@ class Review(models.Model):
         verbose_name='امتیاز'
     )
     comment = models.TextField(verbose_name='نظر')
+    status = models.CharField(max_length=3, choices=REVIEW_STATUS, default=REVIEW_STATUS_APPROVED, verbose_name='وضعیت')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
     modified_at = models.DateTimeField(auto_now=True, verbose_name='تاریخ ویرایش')
 

@@ -1,7 +1,7 @@
 from django.views import generic
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.db.models import Q
+from django.db.models import Q, Avg, Count
 from .models import Book, Review
 from .forms import BookForm, ReviewForm
 from django.shortcuts import get_object_or_404, render, redirect
@@ -20,10 +20,17 @@ class BookDetailView(generic.DetailView):
     template_name = "books/book_detail_page.html"
     context_object_name = "book"
 
+  
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        review_stats = self.object.reviews.aggregate(
+            num_reviews=Count('id'),
+            avg_rating=Avg('rating')
+        )
         context['reviews'] = self.object.reviews.all()
         context['review_form'] = ReviewForm()
+        context['num_reviews'] = review_stats['num_reviews']
+        context['avg_rating'] = review_stats['avg_rating'] or 0 
         return context
     
 
@@ -37,7 +44,6 @@ class ReviewCreateView(LoginRequiredMixin, generic.CreateView):
         review.book = book
         review.user = self.request.user
         review.save()
-        Book.update_rating(book)
         return redirect(book.get_absolute_url())
     
     def form_invalid(self, form):
