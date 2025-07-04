@@ -4,7 +4,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q, Avg, Count
 from .models import Book, Review
 from .forms import BookForm, ReviewForm
-from django.shortcuts import get_object_or_404, render, redirect
+from django.shortcuts import get_object_or_404, redirect
+
 
 class BookListView(generic.ListView):
     model = Book
@@ -14,6 +15,7 @@ class BookListView(generic.ListView):
 
     def get_queryset(self):
         return Book.objects.all().order_by('-modified_datetime')
+
 
 class BookDetailView(generic.DetailView):
     model = Book
@@ -83,7 +85,7 @@ class BookDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView
         obj = self.get_object()
         return obj.user == self.request.user
 
-
+# 
 class BookSearchView(generic.ListView):
     model = Book
     template_name = "books/book_search.html"
