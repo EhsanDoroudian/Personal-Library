@@ -117,7 +117,7 @@
                                 <!-- Shabak Number -->
                                 <div class="col-md-6 mb-3">
                                     <label for="shabak_num" class="form-label fw-bold">شماره شابک</label>
-                                    <input type="text" class="form-control" id="shabak_num" name="shabak_num" placeholder="مثال: 9789643653452" value="{{ form.shabak_num.value|default_if_none:book.shabak_num }}">
+                                    <input type="text" class="form-control" id="shabak_num" name="shabak_num" placeholder="مثال: 9789643653452" value="{{ form.shabak_num.value|default_if_none:"" }}">
                                     {% if form.shabak_num.errors %}
                                         <div class="invalid-feedback d-block">{{ form.shabak_num.errors.0 }}</div>
                                     {% endif %}

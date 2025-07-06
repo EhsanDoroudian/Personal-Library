@@ -65,10 +65,10 @@
                     <div class="row">
                         <div class="col-md-6">
                             <p><strong>ناشر:</strong> انتشارات {{ book.publisher }}</p>
-                            <p><strong>سال انتشار:</strong> {{ book.year }}</p>
+                            <p><strong>سال انتشار:</strong> {{ book.year|default:''}}</p>
                         </div>
                         <div class="col-md-6">
-                            <p><strong>شابک:</strong> {{ book.shabak_num }}</p>
+                            <p><strong>شابک:</strong> {{ book.shabak_num|default:'' }}</p>
                             <p><strong>زبان:</strong> {{ book.language }}</p>
                         </div>
                     </div>

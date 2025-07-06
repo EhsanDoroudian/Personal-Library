@@ -48,7 +48,7 @@ class ReviewCreateView(LoginRequiredMixin, generic.CreateView):
         review.save()
         return redirect(book.get_absolute_url())
     
-    def form_invalid(self, form):
+    def form_invalid(self):
         book = get_object_or_404(Book, pk=self.kwargs['pk'])
         return redirect(book.get_absolute_url())
   
@@ -106,3 +106,4 @@ class BookSearchView(generic.ListView):
         context = super().get_context_data(**kwargs)
         context['query'] = self.request.GET.get('q', '')
         return context
+    

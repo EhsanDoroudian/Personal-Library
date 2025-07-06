@@ -24,6 +24,7 @@ class Book(models.Model):
     shabak_num = models.CharField(
         max_length=16,
         unique=True,
+        blank=True,
         null=True,
         validators=[RegexValidator(r'^\d{10,13}$', 'شابک باید ۱۰ یا ۱۳ رقمی باشد.')],
         verbose_name='شابک'
@@ -33,12 +34,12 @@ class Book(models.Model):
     year = models.PositiveIntegerField(null=True, blank=True, verbose_name='سال انتشار')  # Changed to PositiveIntegerField
     cover = models.ImageField(upload_to='covers/', blank=True, null=True, verbose_name='جلد')
     price = models.PositiveIntegerField(null=True, blank=True, verbose_name='قیمت')
-    language = models.CharField(max_length=50, default='فارسی', verbose_name='زبان', null=True)
+    language = models.CharField(max_length=50, default='فارسی', verbose_name='زبان', blank=True)
     status = models.CharField(
         max_length=30,
         choices=[('readed', 'خوانده شده'), ('borrowed', 'قرض داده شده'), ('not readed', 'خوانده نشده')],
         default='readed',
-        verbose_name='وضعیت'
+        verbose_name='وضعیت',
     )
     created_datetime = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ ایجاد')
     modified_datetime = models.DateTimeField(auto_now=True, verbose_name='تاریخ ویرایش')

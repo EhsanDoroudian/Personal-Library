@@ -4,11 +4,11 @@ from django.utils import timezone
 import datetime
 
 from accounts.models import CustomUserModel
-from books.forms import ReviewForm
+from books.forms import ReviewForm, BookForm
 from books.models import Book, Review
 
 
-class CreateBookAndUser(TestCase):
+class BookTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         # Create a test user
@@ -66,8 +66,14 @@ class CreateBookAndUser(TestCase):
             created_at=timezone.now()
         )
 
-class BookListTest(CreateBookAndUser):
-    def test_book_list_url(self):
+class BookListTest(BookTest):
+    def test_book_list_urls(self):
+        response = self.client.get('')
+        response2 = self.client.get('/books/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response2.status_code, 200)
+
+    def test_book_list_name(self):
         response = self.client.get(reverse('books:book_list'))
         self.assertEqual(response.status_code, 200)
 
@@ -120,7 +126,7 @@ class BookListTest(CreateBookAndUser):
         self.assertEqual(books[1], self.book1)  # Older book second
 
 
-class BookDetailTest(CreateBookAndUser):
+class BookDetailTest(BookTest):
     def test_book_detail_url_name(self):
         response = self.client.get(reverse('books:book_detail', kwargs={'pk': self.book1.id}))
         self.assertEqual(response.status_code, 200)
@@ -158,3 +164,68 @@ class BookDetailTest(CreateBookAndUser):
         # Test with a non-existent book ID
         response = self.client.get(reverse('books:book_detail', kwargs={'pk': 999}))
         self.assertEqual(response.status_code, 404)
+
+
+class BookCreateTest(BookTest):
+    def test_book_create_view_url_unauthenticated_users(self):
+        response = self.client.get('/create/')
+        response2 = self.client.get('/books/create/')
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response2.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/?next=/create/')
+        self.assertRedirects(response2, '/accounts/login/?next=/books/create/')
+
+    def test_book_create_view_name_unauthenticated_users(self):
+        response = self.client.get(reverse('books:book_create'))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/?next=/books/create/')
+
+    def test_book_view_authenticated_users(self):
+        self.client.force_login(self.user1)
+        response = self.client.get(reverse('books:book_create'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_book_view_authenticated_template_used(self):
+        self.client.force_login(self.user1)
+        response = self.client.get(reverse("books:book_create"))
+        self.assertTemplateUsed(response, 'books/book_create_page.html')
+
+    def test_book_create_context(self):
+        self.client.force_login(self.user1)
+        response = self.client.get(reverse("books:book_create"))
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(response.context['form'], BookForm)
+    
+    def test_book_view_form(self):
+        self.client.force_login(self.user1)
+        url = reverse('books:book_create')  
+        response = self.client.post(  
+            path=url,
+            data={
+                'user': self.user1,
+                'title ': 'New Book',
+                'body': 'New Body',
+                'author': 'New Author',
+                'category': 'New Category',
+                'publisher': 'New Publisher',
+                'translator': 'New Translator',
+                'status': 'readed'
+            },
+        )
+        
+        # Debug: Print form errors if status is not 302
+        if response.status_code != 302:
+            print("Form errors:", response.context['form'].errors)
+        
+        self.assertEqual(response.status_code, 302)  # Should redirect
+        new_book = Book.objects.last()
+        self.assertIsNotNone(new_book)  # Ensure Book was created
+        self.assertEqual(Book.objects.last().user, self.user1)
+        self.assertEqual(Book.objects.last().title, 'New Book')
+        self.assertEqual(Book.objects.last().body, 'New Body')
+        self.assertEqual(Book.objects.last().author, 'New Author')
+        self.assertEqual(Book.objects.last().category, 'New Category')
+        self.assertEqual(Book.objects.last().publisher, 'New Publisher')
+
+        self.assertEqual(response.url, new_book.get_absolute_url())  # Check redirect URL
