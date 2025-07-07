@@ -76,7 +76,7 @@ class BookUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
 
 class BookDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
     model = Book
-    template_name = "books/book_delete_page.html"
+    template_name = "books/book_update_page.html"
 
     def get_success_url(self):
         return reverse("books:book_list")  

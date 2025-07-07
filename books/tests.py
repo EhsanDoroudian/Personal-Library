@@ -221,11 +221,160 @@ class BookCreateTest(BookTest):
         self.assertEqual(response.status_code, 302)  # Should redirect
         new_book = Book.objects.last()
         self.assertIsNotNone(new_book)  # Ensure Book was created
-        self.assertEqual(Book.objects.last().user, self.user1)
-        self.assertEqual(Book.objects.last().title, 'New Book')
-        self.assertEqual(Book.objects.last().body, 'New Body')
-        self.assertEqual(Book.objects.last().author, 'New Author')
-        self.assertEqual(Book.objects.last().category, 'New Category')
-        self.assertEqual(Book.objects.last().publisher, 'New Publisher')
+        self.assertEqual(new_book.title, 'New Book')
+        self.assertEqual(new_book.body, 'New Body')
+        self.assertEqual(new_book.author, 'New Author')
+        self.assertEqual(new_book.category, 'New Category')
+        self.assertEqual(new_book.publisher, 'New Publisher')
+        self.assertEqual(new_book.translator, 'New Translator')
+        self.assertEqual(new_book.status, 'readed')
 
         self.assertEqual(response.url, new_book.get_absolute_url())  # Check redirect URL
+
+    def test_book_create_form_invalid(self):
+        self.client.force_login(self.user1)
+        # Submit empty data to trigger validation errors
+        response = self.client.post(reverse('books:book_create'), data={})
+        self.assertEqual(response.status_code, 200)  # Stays on same page
+        self.assertTemplateUsed(response, 'books/book_create_page.html')
+        self.assertEqual(Book.objects.all().count(), 2)  # No book created
+        self.assertTrue(response.context['form'].errors)  # Form has errors
+
+    def test_book_create_post_unauthenticated(self):
+        book_data = {
+            'title': 'New Book',
+            'body': 'New Body',
+            'author': 'New Author',
+            'category': 'New Category',
+            'publisher': 'New Publisher',
+            'translator': 'New Translator',
+            'status': 'readed'  # Adjust if status is not a valid field
+        }
+        response = self.client.post(reverse('books:book_create'), data=book_data)
+        self.assertEqual(response.status_code, 302)  # Redirect to login
+        self.assertRedirects(response, '/accounts/login/?next=/books/create/')
+        self.assertEqual(Book.objects.all().count(), 2)  # No book created
+
+
+class BookUpdateTest(BookTest):
+    def test_book_update_url_unauthenticated(self):
+        response = self.client.get(reverse('books:book_update', kwargs={'pk': self.book1.id}))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f'/accounts/login/?next=/books/update/{self.book1.id}/')
+
+    def test_book_update_authenticated_owner(self):
+        self.client.force_login(self.user1)
+        response = self.client.get(reverse('books:book_update', kwargs={'pk': self.book1.id}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_book_update_template_used(self):
+        self.client.force_login(self.user1)
+        response = self.client.get(reverse('books:book_update', kwargs={'pk': self.book1.id}))
+        self.assertTemplateUsed(response, 'books/book_update_page.html')
+
+    def test_book_update_context(self):
+        self.client.force_login(self.user1)
+        response = self.client.get(reverse('books:book_update', kwargs={'pk': self.book1.id}))
+        self.assertEqual(response.status_code, 200)
+        self.assertIsInstance(response.context['form'], BookForm)
+        self.assertEqual(response.context['object'], self.book1)
+
+    def test_book_update_form_submission(self):
+        self.client.force_login(self.user1)
+        update_data = {
+            'title': 'Updated Book',
+            'body': 'Updated body',
+            'author': 'Updated Author',
+            'category': 'Non-Fiction',
+            'publisher': 'Updated Publisher',
+            'translator': 'Updated Translator',
+            'status': 'readed'  # Adjust if status is not a valid field
+        }
+        response = self.client.post(reverse('books:book_update', kwargs={'pk': self.book1.id}), data=update_data)
+
+        if response.status_code != 302:
+            self.fail(f"Form submission failed: {response.context['form'].errors}")
+            
+        self.assertEqual(response.status_code, 302)  # Redirect after success
+        self.book1.refresh_from_db()  # Refresh to get updated values
+        self.assertEqual(self.book1.title, 'Updated Book')
+        self.assertEqual(self.book1.body, 'Updated body')
+        self.assertEqual(self.book1.author, 'Updated Author')
+        self.assertEqual(self.book1.category, 'Non-Fiction')
+        self.assertEqual(self.book1.publisher, 'Updated Publisher')
+        self.assertEqual(self.book1.translator, 'Updated Translator')
+        self.assertEqual(self.book1.status, 'readed')  # Adjust if status is not a field
+        self.assertEqual(self.book1.user, self.user1)  # User should remain unchanged
+        # Check redirect (assumes get_absolute_url points to book_detail)
+        self.assertRedirects(response, reverse('books:book_detail', kwargs={'pk': self.book1.id}))
+
+    def test_book_update_form_invalid(self):
+        self.client.force_login(self.user1)
+        # Submit empty data to trigger validation errors
+        response = self.client.post(reverse('books:book_update', kwargs={'pk': self.book1.id}), data={})
+        self.assertEqual(response.status_code, 200)  # Stays on same page
+        self.assertTemplateUsed(response, 'books/book_update_page.html')
+        self.book1.refresh_from_db()
+        self.assertEqual(self.book1.title, 'Book One')  # Original title unchanged
+        self.assertTrue(response.context['form'].errors)  # Form has errors
+
+    def test_book_update_non_owner(self):
+        self.client.force_login(self.user2)
+        response = self.client.get(reverse('books:book_update', kwargs={'pk': self.book1.id}))
+        self.assertEqual(response.status_code, 403)  # Forbidden for non-owner
+
+    def test_book_update_post_non_owner(self):
+        self.client.force_login(self.user2)
+        update_data = {
+            'title': 'Unauthorized Update',
+            'body': 'Unauthorized body',
+            'author': 'Unauthorized Author',
+            'category': 'Unauthorized Category',
+            'publisher': 'Unauthorized Publisher',
+            'translator': 'Unauthorized Translator',
+            'status': 'readed'
+        }
+        response = self.client.post(reverse('books:book_update', kwargs={'pk': self.book1.id}), data=update_data)
+        self.assertEqual(response.status_code, 403)  # Forbidden for non-owner
+        self.book1.refresh_from_db()
+        self.assertEqual(self.book1.title, 'Book One')  # Original title unchanged
+
+    def test_book_update_invalid_pk(self):
+        self.client.force_login(self.user1)
+        response = self.client.get(reverse('books:book_update', kwargs={'pk': 999}))
+        self.assertEqual(response.status_code, 404)
+
+
+class BookDeleteTest(BookTest):
+    def test_book_delete_url_unauthenticated(self):
+        response = self.client.get(reverse('books:book_delete', kwargs={'pk': self.book1.id}))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, f'/accounts/login/?next=/books/delete/{self.book1.id}/')
+        
+    def test_book_delete_form_submission(self):
+        self.client.force_login(self.user1)
+        response = self.client.post(reverse('books:book_delete', kwargs={'pk': self.book1.id}))
+        self.assertEqual(response.status_code, 302)  # Redirect after success
+        self.assertFalse(Book.objects.filter(id=self.book1.id).exists())  # Book deleted
+        self.assertRedirects(response, reverse('books:book_list'))  # Redirect to book list
+
+    def test_book_delete_non_owner(self):
+        self.client.force_login(self.user2)
+        response = self.client.get(reverse('books:book_delete', kwargs={'pk': self.book1.id}))
+        self.assertEqual(response.status_code, 403)  # Forbidden for non-owner
+
+    def test_book_delete_post_non_owner(self):
+        self.client.force_login(self.user2)
+        response = self.client.post(reverse('books:book_delete', kwargs={'pk': self.book1.id}))
+        self.assertEqual(response.status_code, 403)  # Forbidden for non-owner
+        self.assertTrue(Book.objects.filter(id=self.book1.id).exists())  # Book not deleted
+
+    def test_book_delete_invalid_pk(self):
+        self.client.force_login(self.user1)
+        response = self.client.get(reverse('books:book_delete', kwargs={'pk': 999}))
+        self.assertEqual(response.status_code, 404)  # Non-existent book
+
+    def test_book_delete_post_invalid_pk(self):
+        self.client.force_login(self.user1)
+        response = self.client.post(reverse('books:book_delete', kwargs={'pk': 999}))
+        self.assertEqual(response.status_code, 404)  # Non-existent book
