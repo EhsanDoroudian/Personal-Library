@@ -48,7 +48,7 @@ class ReviewCreateView(LoginRequiredMixin, generic.CreateView):
         review.save()
         return redirect(book.get_absolute_url())
     
-    def form_invalid(self):
+    def form_invalid(self, form):
         book = get_object_or_404(Book, pk=self.kwargs['pk'])
         return redirect(book.get_absolute_url())
   
@@ -76,7 +76,7 @@ class BookUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView
 
 class BookDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
     model = Book
-    template_name = "books/book_update_page.html"
+    template_name = "books/book_delete_page.html"
 
     def get_success_url(self):
         return reverse("books:book_list")  

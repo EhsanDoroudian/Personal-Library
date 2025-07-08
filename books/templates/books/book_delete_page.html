@@ -1,0 +1,33 @@
+{% extends '_base.html' %}
+{% load static %}
+
+{% block title %}حذف کتاب{% endblock title %}
+
+{% block style %}
+    <link rel="stylesheet" href="{% static 'css/book_delete.css' %}">
+{% endblock style %}
+
+{% block content %}
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h3>حذف کتاب {{book.title}}</h3>
+            </div>
+            <div class="card-body">
+                <p class="lead">آیا مطمئن هستید که می‌خواهید کتاب "{{ book.title }}" را حذف کنید؟ این عمل غیرقابل بازگشت است.</p>
+                <form method="POST" action="{% url 'books:book_delete' book.id %}" class="d-inline">
+                    <a href={% url "books:book_list"%} type="button" class="btn btn-secondary">انصراف</a>
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">حذف کتاب</button>
+                </form>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    <script src="{% static 'js/book_delete.js'%}"></script>
+{% endblock script %}

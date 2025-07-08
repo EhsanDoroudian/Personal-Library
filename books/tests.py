@@ -350,7 +350,17 @@ class BookDeleteTest(BookTest):
         response = self.client.get(reverse('books:book_delete', kwargs={'pk': self.book1.id}))
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, f'/accounts/login/?next=/books/delete/{self.book1.id}/')
-        
+    
+    def test_book_delete_authenticated_owner(self):
+        self.client.force_login(self.user1)
+        response = self.client.get(reverse('books:book_delete', kwargs={'pk': self.book1.id}))
+        self.assertEqual(response.status_code, 200)
+    
+    def test_book_delete_template_used(self):
+        self.client.force_login(self.user1)
+        response = self.client.get(reverse('books:book_delete', kwargs={'pk': self.book1.id}))
+        self.assertTemplateUsed(response, 'books/book_delete_page.html')
+
     def test_book_delete_form_submission(self):
         self.client.force_login(self.user1)
         response = self.client.post(reverse('books:book_delete', kwargs={'pk': self.book1.id}))
@@ -378,3 +388,44 @@ class BookDeleteTest(BookTest):
         self.client.force_login(self.user1)
         response = self.client.post(reverse('books:book_delete', kwargs={'pk': 999}))
         self.assertEqual(response.status_code, 404)  # Non-existent book
+
+
+class ReviewTest(BookTest):
+    def test_review_view_form(self):
+        self.client.force_login(self.user1)
+        url = reverse('books:review_create', kwargs={'pk': self.book2.id})  
+        response = self.client.post(  
+            path=url,
+            data={
+            "user": self.user1,
+            "book": self.book2,
+            "comment": 'Great book!',
+            "rating": 5,
+            "created_at": timezone.now()
+            },
+        )
+        
+        # Debug: Print form errors if status is not 302
+        if response.status_code != 302:
+            print("Form errors:", response.context['form'].errors)
+        
+        self.assertEqual(response.status_code, 302)  # Should redirect
+        new_review = Review.objects.last()
+        self.assertIsNotNone(new_review) 
+        self.assertEqual(new_review.user.id, self.user1.id)
+        self.assertEqual(new_review.book.id, self.book2.id)
+        self.assertEqual(new_review.comment, 'Great book!')
+        self.assertEqual(new_review.rating, 5)
+        self.assertEqual(response.url, self.book2.get_absolute_url())  # Check redirect URL
+        self.assertRedirects(response, self.book2.get_absolute_url()) 
+
+
+    def test_review_create_form_invalid(self):
+        self.client.force_login(self.user1)
+        # Submit empty data to trigger validation errors
+        url = reverse('books:review_create', kwargs={'pk': self.book2.id})  
+        response = self.client.post(path=url, data={})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, self.book2.get_absolute_url())
+        self.assertRedirects(response, self.book2.get_absolute_url()) 
+        self.assertEqual(Review.objects.all().count(), 2) 
